@@ -1,0 +1,5 @@
+<div id="content">
+  <app-info-song [song]="currentSong"></app-info-song>
+  <br>
+  <app-media-control (requestNextSong)="changeToNextSong()" (requestLastSong)="changeToLastSong()"></app-media-control>
+</div>
