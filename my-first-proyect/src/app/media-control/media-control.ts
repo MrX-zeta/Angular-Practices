@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, OnInit, output } from '@angular/core';
 
 @Component({
   selector: 'app-media-control',
@@ -6,18 +6,26 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './media-control.html',
   styleUrl: './media-control.css'
 })
-export class MediaControl {
-  @Input() song: any;
-    isPlaying: boolean = false;
+export class MediaControl implements OnInit{
 
-    @Output() requestNextSong = new EventEmitter<void>();
-    @Output() requestLastSong = new EventEmitter<void>();
+  song: any;
+  isPlaying:boolean = false;
+  requestSong = output<boolean>();
 
-    nextSong() {
-        this.requestNextSong.emit();
-    }
+  constructor(){
+    
+  }
 
-    lastSong() {
-        this.requestLastSong.emit();
-    }
+  ngOnInit(): void {
+      console.log("")
+  }
+
+  nextSong(){
+    this.requestSong.emit(true);
+  }
+
+  lastSong(){
+    this.requestSong.emit(false);
+  }
+
 }

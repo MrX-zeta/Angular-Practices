@@ -1,4 +1,5 @@
-import { Component, signal } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, Component, OnInit, signal } from '@angular/core';
+import { Song } from './interfaces/song';
 
 @Component({
   selector: 'app-root',
@@ -6,44 +7,82 @@ import { Component, signal } from '@angular/core';
   standalone: false,
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('my-first-proyect');
-  title2 = 'exampleAngular';
+export class App{
+  protected readonly title = signal('EXAMPLE_APP');
 
-  nextSongs: any[] = [
-    {
-      name: 'Song 1',
-      artist: 'Artist 1',
-      url: 'https://picsum.photos/200/300?random=1'
-    }
-  ];
-
-  nextSongsQueue: any[] = [
-    {
-      name: 'Song 2',
-      artist: 'Artist 2',
-      url: 'https://picsum.photos/200/300?random=2'
-    }
-  ];
-
-  lastSongs: any[] = [];
-  currentSong: any | undefined = undefined;
-
-  changeToLastSong() {
-    if (this.lastSongs.length !== 0) {
-      if (this.currentSong) {
-        this.nextSongsQueue.push(this.currentSong);
-      }
-      this.currentSong = this.lastSongs.pop();
-    }
+  constructor(){
+    this.actualSong = this.getNextSongFromPlaylist();
   }
 
-  changeToNextSong() {
-    if (this.nextSongsQueue.length !== 0) {
-      if (this.currentSong) {
-        this.lastSongs.push(this.currentSong);
-      }
-      this.currentSong = this.nextSongsQueue.pop();
+nextSongs: Song[] = [
+   {
+      name: "Amar como tú",
+      artist: "Steven",
+      url_cover: "https://picsum.photos/200",
+      url_media: ""
+  },
+   {
+      name: "Science",
+      artist: "Arctic Monkeys",
+      url_cover: "https://picsum.photos/200",
+      url_media: ""
+  },
+  {
+      name: "Surf",
+      artist: "Mac Miller", 
+      url_cover: "https://picsum.photos/200",
+      url_media: ""
+  },
+]
+
+lastSongs: Song[] = []
+actualSong: Song;
+
+
+ changeSong(value: boolean){
+  if(value){
+      if(this.nextSongs.length==0)
+        return;
+
+      this.lastSongs.push(this.actualSong);
+      this.actualSong = this.getNextSongFromPlaylist();
+    } else {
+      if(this.lastSongs.length == 0)
+        return;
+
+      this.nextSongs.push(this.actualSong);
+      this.actualSong = this.getLastSongFromPlaylist();
     }
+  if(this.actualSong != undefined){
+    alert("No se ha podido cargar la canción.")
+  }
+ }
+
+ getNextSongFromPlaylist(): Song{
+  let possible_song = this.nextSongs.pop()
+  if(possible_song !== undefined)
+    return possible_song;
+  else{
+    return{
+      name: "Amar como tú",
+      artist: "Steven",
+      url_cover: "https://picsum.photos/200",
+      url_media: ""
+    }
+  }
+ }
+
+ getLastSongFromPlaylist(): Song{
+  let possible_song = this.lastSongs.pop()
+  if(possible_song !== undefined)
+    return possible_song;
+  else{
+    return{
+      name: "Amar como tú",
+      artist: "Steven",
+      url_cover: "https://picsum.photos/200",
+      url_media: ""
+    }
+  }
   }
 }
