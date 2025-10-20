@@ -1,31 +1,55 @@
-import { Component, OnInit, output } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MusicPlayerService } from '../services/music-player.service';
 
 @Component({
   selector: 'app-media-control',
-  standalone: false,
   templateUrl: './media-control.html',
-  styleUrl: './media-control.css'
+  styleUrls: ['./media-control.css']
+  ,
+  standalone: true,
+  imports: [CommonModule]
 })
-export class MediaControl implements OnInit{
+export class MediaControl {
+  private musicService = inject(MusicPlayerService);
+  
+  // Computed properties que se actualizan automáticamente
+  currentSong = this.musicService.currentSong;
+  isPlaying = this.musicService.isPlaying;
+  progress = this.musicService.progress;
+  duration = this.musicService.duration;
+  currentTime = this.musicService.currentTime;
 
-  song: any;
-  isPlaying:boolean = false;
-  requestSong = output<boolean>();
+  // Formatear tiempo en MM:SS
+  formatTime = computed(() => {
+    const time = this.currentTime();
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  });
 
-  constructor(){
-    
+  formatDuration = computed(() => {
+    const time = this.duration();
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  });
+
+  playPause() {
+    this.musicService.playPause();
   }
 
-  ngOnInit(): void {
-      console.log("")
+  nextSong() {
+    this.musicService.nextSong();
   }
 
-  nextSong(){
-    this.requestSong.emit(true);
+  previousSong() {
+    this.musicService.previousSong();
   }
 
-  lastSong(){
-    this.requestSong.emit(false);
+  onProgressChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const value = parseFloat(target.value);
+    this.musicService.setProgress(value);
   }
-
 }

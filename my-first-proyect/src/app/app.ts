@@ -1,88 +1,82 @@
-import { AfterContentChecked, AfterContentInit, Component, OnInit, signal } from '@angular/core';
-import { Song } from './interfaces/song';
+import { Component, inject } from '@angular/core';
+import { MusicPlayerService } from './services/music-player.service';
+import { SpotifyService } from './services/spotify.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
   standalone: false,
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App{
-  protected readonly title = signal('EXAMPLE_APP');
-
-  constructor(){
-    this.actualSong = this.getNextSongFromPlaylist();
+export class App {
+  private musicService = inject(MusicPlayerService);
+  private spotifyService = inject(SpotifyService);
+  
+  title = 'SoundShock';
+  
+  currentSong = this.musicService.currentSong;
+  isPlaying = this.musicService.isPlaying;
+  
+  constructor() {
+    (window as any).musicService = this.musicService;
+    (window as any).spotifyService = this.spotifyService;
+    console.log('🎵 SoundShock inicializado');
+    console.log('🔧 Para probar audio, ejecuta: musicService.testAudio()');
+    console.log('🎶 Para probar Spotify login, ejecuta: spotifyService.loginUser()');
   }
 
-nextSongs: Song[] = [
-   {
-      name: "Amar como tú",
-      artist: "Steven",
-      url_cover: "https://picsum.photos/200",
-      url_media: ""
-  },
-   {
-      name: "Science",
-      artist: "Arctic Monkeys",
-      url_cover: "https://picsum.photos/200",
-      url_media: ""
-  },
-  {
-      name: "Surf",
-      artist: "Mac Miller", 
-      url_cover: "https://picsum.photos/200",
-      url_media: ""
-  },
-]
-
-lastSongs: Song[] = []
-actualSong: Song;
-
-
- changeSong(value: boolean){
-  if(value){
-      if(this.nextSongs.length==0)
-        return;
-
-      this.lastSongs.push(this.actualSong);
-      this.actualSong = this.getNextSongFromPlaylist();
-    } else {
-      if(this.lastSongs.length == 0)
-        return;
-
-      this.nextSongs.push(this.actualSong);
-      this.actualSong = this.getLastSongFromPlaylist();
-    }
-  if(this.actualSong != undefined){
-    alert("No se ha podido cargar la canción.")
+  // Método para probar login de Spotify
+  testSpotifyLogin() {
+    console.log('🎶 Intentando login de Spotify...');
+    this.spotifyService.loginUser();
   }
- }
 
- getNextSongFromPlaylist(): Song{
-  let possible_song = this.nextSongs.pop()
-  if(possible_song !== undefined)
-    return possible_song;
-  else{
-    return{
-      name: "Amar como tú",
-      artist: "Steven",
-      url_cover: "https://picsum.photos/200",
-      url_media: ""
+  // Método para recargar playlist de Spotify
+  async reloadSpotifyPlaylist() {
+    console.log('🔄 Recargando playlist de Spotify...');
+    try {
+      // Llamar directamente al método del servicio de música
+      await this.musicService.loadSpotifyPlaylist();
+      console.log('✅ Playlist recargada exitosamente');
+    } catch (error) {
+      console.error('❌ Error recargando playlist:', error);
     }
   }
- }
 
- getLastSongFromPlaylist(): Song{
-  let possible_song = this.lastSongs.pop()
-  if(possible_song !== undefined)
-    return possible_song;
-  else{
-    return{
-      name: "Amar como tú",
-      artist: "Steven",
-      url_cover: "https://picsum.photos/200",
-      url_media: ""
+  // Método para usar el código de autorización de Spotify
+  async useSpotifyCode() {
+    const code = prompt('Pega el código de Spotify aquí (después de "code=" en la URL):');
+    if (code) {
+      try {
+        console.log('🎫 Usando código de Spotify:', code.substring(0, 20) + '...');
+        const tokenData = await this.spotifyService.getTokenFromCode(code);
+        console.log('✅ Token obtenido:', tokenData);
+        alert('¡Token de Spotify guardado! Ahora recarga la playlist.');
+      } catch (error) {
+        console.error('❌ Error con código Spotify:', error);
+        alert('Error: ' + error);
+      }
     }
   }
+
+  // Métodos para probar navegación
+  testNextSong() {
+    console.log('🔄 Probando siguiente canción...');
+    this.musicService.nextSong();
+  }
+
+  testPreviousSong() {
+    console.log('🔄 Probando canción anterior...');
+    this.musicService.previousSong();
+  }
+
+  // Método para mostrar playlist actual
+  showCurrentPlaylist() {
+    const playlist = this.musicService.playlist();
+    const currentIndex = this.musicService.currentSong();
+    console.log('📋 Playlist actual:', playlist);
+    console.log('🎵 Canción actual:', currentIndex);
+    console.log('📊 Total de canciones:', playlist.length);
+    alert(`Playlist: ${playlist.length} canciones. Ver consola para detalles.`);
   }
 }
