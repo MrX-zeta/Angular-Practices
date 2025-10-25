@@ -21,18 +21,16 @@ import { Player } from './player/player';
     App,
     AudioController,
     Player,
-    SearchSection
+    SearchSection,
+    InfoSong,
+    MediaControl
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    InfoSong,
-    MediaControl
-    ,
-    SongInfo
-    ,
-  SearchBarModule,
+    
+    SearchBarModule,
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),

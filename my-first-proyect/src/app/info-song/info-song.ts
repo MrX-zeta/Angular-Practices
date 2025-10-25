@@ -1,12 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-info-song',
   templateUrl: './info-song.html',
   styleUrls: ['./info-song.css'],
-  standalone: true,
-  imports: [CommonModule]
+  standalone: false
 })
 export class InfoSong implements OnInit{
 

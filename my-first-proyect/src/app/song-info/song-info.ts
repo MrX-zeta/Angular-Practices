@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { Track } from '../interfaces/track';
 import { Image } from '../interfaces/image';
 
 @Component({
   selector: 'app-song-info',
-  standalone: true,
-  imports: [CommonModule],
+  standalone: false,
   templateUrl: './song-info.html',
   styleUrls: ['./song-info.css']
 })

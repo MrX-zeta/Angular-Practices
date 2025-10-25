@@ -1,14 +1,11 @@
 import { Component, computed, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MusicPlayerService } from '../services/music-player.service';
 
 @Component({
   selector: 'app-media-control',
   templateUrl: './media-control.html',
-  styleUrls: ['./media-control.css']
-  ,
-  standalone: true,
-  imports: [CommonModule]
+  styleUrls: ['./media-control.css'],
+  standalone: false
 })
 export class MediaControl {
   private musicService = inject(MusicPlayerService);
