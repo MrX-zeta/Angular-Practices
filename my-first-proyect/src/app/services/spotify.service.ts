@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({providedIn: 'root'})
 export class SpotifyService {
-  private clientId = '9944d71af81a4b06a0722ac659d82858';
-  private clientSecret = '498b8a8723794bf5aefe693197effd66';
+  private clientId = '46ce3fe18b554406a71d8af46fe351c7';
+  private clientSecret = 'd077bb07eb4544179dd44d95167ef0e3';
   
   // URLs de redirección (deben estar registradas en Spotify Dashboard)
   private redirectUri = 'https://www.google.com';

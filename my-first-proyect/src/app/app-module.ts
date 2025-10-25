@@ -8,6 +8,7 @@ import { InfoSong } from './info-song/info-song';
 import { MediaControl } from './media-control/media-control';
 import { AudioController } from './audio-controller/audio-controller';
 import { SongInfo } from './song-info/song-info';
+import { Playlist } from './playlist/playlist';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth-interceptor';
 
@@ -23,7 +24,9 @@ import { Player } from './player/player';
     Player,
     SearchSection,
     InfoSong,
-    MediaControl
+    MediaControl,
+    SongInfo,
+    Playlist
   ],
   imports: [
     BrowserModule,
