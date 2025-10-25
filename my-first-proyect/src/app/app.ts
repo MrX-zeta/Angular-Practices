@@ -1,6 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MusicPlayerService } from './services/music-player.service';
 import { SpotifyService } from './services/spotify.service';
+import { ImageService } from './services/image.service';
 
 @Component({
   selector: 'app-root',
@@ -11,11 +12,15 @@ import { SpotifyService } from './services/spotify.service';
 export class App {
   private musicService = inject(MusicPlayerService);
   private spotifyService = inject(SpotifyService);
+  private imageService = inject(ImageService);
   
   title = 'SoundShock';
   
   currentSong = this.musicService.currentSong;
   isPlaying = this.musicService.isPlaying;
+  featuredImages: string[] = [];
+  cardsImages: string[] = [];
+  userAvatar: string = 'https://via.placeholder.com/32';
   
   constructor() {
     (window as any).musicService = this.musicService;
@@ -23,6 +28,20 @@ export class App {
     console.log('🎵 SoundShock inicializado');
     console.log('🔧 Para probar audio, ejecuta: musicService.testAudio()');
     console.log('🎶 Para probar Spotify login, ejecuta: spotifyService.loginUser()');
+  }
+
+  async ngOnInit(): Promise<void> {
+    // load a batch of images for the UI
+    try {
+      const urls = await this.imageService.loadImages(24);
+      // populate arrays used by template (guarded by length)
+      this.featuredImages = urls.slice(0, 6);
+      this.cardsImages = urls.slice(6);
+      // pick a random avatar from the loaded images (small size)
+      this.userAvatar = this.imageService.getRandomUrl('https://via.placeholder.com/32');
+    } catch (err) {
+      console.warn('Could not load images', err);
+    }
   }
 
   // Método para probar login de Spotify

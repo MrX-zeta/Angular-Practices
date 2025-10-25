@@ -1,0 +1,32 @@
+<div class="search-section">
+  <app-search-bar (searchResults)="onSearchResults($event)"></app-search-bar>
+  
+  <div class="search-results" *ngIf="searchResults.length > 0">
+    <h3>Resultados de búsqueda</h3>
+    <div class="results-list">
+      <div class="result-item" *ngFor="let track of searchResults">
+        <div class="track-info">
+          <img [src]="track.album?.images?.[0]?.url || 'assets/default-album.png'" 
+               [alt]="track.name" 
+               class="track-image" />
+          <div class="track-details">
+            <h4>{{ track.name }}</h4>
+            <p>{{ track.artists?.[0]?.name }}</p>
+            <p class="album">{{ track.album?.name }}</p>
+          </div>
+        </div>
+        <button class="play-btn" title="Agregar a playlist">
+          <i class="fa-solid fa-plus"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="loading" *ngIf="isLoading">
+    <p>Buscando...</p>
+  </div>
+  
+  <div class="no-results" *ngIf="!isLoading && searchResults.length === 0">
+    <p>Busca tu música favorita</p>
+  </div>
+</div>

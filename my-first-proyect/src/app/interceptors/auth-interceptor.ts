@@ -1,28 +1,31 @@
-import { HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse } from '@angular/common/http';
+import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpResponse } from '@angular/common/http';
+import {tap} from 'rxjs/operators';
+import { HttpEventType } from '@angular/common/http';
+import { CookieStorageService } from '../services/general/cookie-storage-service';
 import { inject } from '@angular/core';
-import { tap } from 'rxjs';
-import { CookiesStorageService } from '../services/general/cookies-storage-service';
-import { isTokenResponse } from '../core/guards/spotify-api/is-token-response';
-import { environment } from '../../environments/environment.development';
-
 export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn) => {
 
-  const _cookieService = inject(CookiesStorageService);
-
+  const _cookieStorageService: CookieStorageService = inject(CookieStorageService);
+  
   return next(req).pipe(
     tap(event => {
-      if(!req.url.includes(environment.AUTH_API_URL))
+      if (!(event.type === HttpEventType.Response)) 
         return;
-      if(event instanceof HttpResponse && event.status === 200){
-        const body = event.body as any;
 
-        if(isTokenResponse(body)){
-          const expirationMS = 60*60*1000;
-          const expirationDate = new Date(Date.now() + expirationMS)
+      const body = event.body as any;
+      
+      if(!body || !body.access_token)
+        return;
+      const expirationTime = 60*60*1000;
+      const expirationDate = new Date(Date.now() + expirationTime);
 
-          _cookieService.setKey('access_token', body.access_token, expirationDate);
-        }
-      }
-    })
-  );
+      _cookieStorageService.createCookie('access_token', body.access_token, expirationDate);
+
+    
+      
+}
+)
+);
+
+
 };

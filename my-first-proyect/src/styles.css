@@ -1,1 +1,826 @@
-/* You can add global styles to this file, and also import other style files */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+	background-color: #000;
+	color: #fff;
+	overflow: hidden;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.main-container {
+	display: flex;
+	flex: 1;
+}
+
+.sidebar {
+	width: 240px;
+	background-color: #000;
+	padding: 24px 0;
+	display: flex;
+	flex-direction: column;
+	border-right: 1px solid #282828;
+}
+
+.sidebar-header {
+	display: flex;
+	align-items: center;
+	padding: 0 24px;
+	margin-bottom: 18px;
+}
+
+.sidebar-header i {
+	font-size: 32px;
+	color: #1db954;
+	margin-right: 12px;
+}
+
+.sidebar-header h2 {
+	font-size: 24px;
+	font-weight: 700;
+}
+
+.sidebar-nav ul {
+	list-style: none;
+	padding: 0 24px;
+}
+
+.sidebar-nav li {
+	display: flex;
+	align-items: center;
+	padding: 8px 0;
+	color: #b3b3b3;
+	cursor: pointer;
+	transition: color 0.3s ease;
+	font-weight: 500;
+}
+
+.sidebar-nav li:hover {
+	color: #fff;
+}
+
+.sidebar-nav li i {
+	width: 24px;
+	margin-right: 16px;
+	font-size: 16px;
+}
+
+.sidebar-nav li:first-child {
+	color: #fff;
+}
+
+.sidebar-section {
+	margin-top: 32px;
+	padding: 0 24px;
+	flex: 1;
+}
+
+.sidebar-section h3 {
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 1.5px;
+	text-transform: uppercase;
+	color: #b3b3b3;
+	margin-bottom: 16px;
+}
+
+.playlists {
+	list-style: none;
+}
+
+.playlists li {
+	padding: 8px 0;
+	color: #b3b3b3;
+	cursor: pointer;
+	transition: color 0.3s ease;
+	font-size: 14px;
+}
+
+.playlists li:hover {
+	color: #fff;
+}
+
+.playlists li i {
+	margin-right: 16px;
+	width: 16px;
+}
+
+.playlist-item {
+	padding-left: 32px;
+}
+
+.main-content {
+	flex: 1;
+	background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #121212 100%);
+	display: flex;
+	flex-direction: column;
+}
+
+.topbar {
+	height: 60px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 32px;
+	background: rgba(0, 0, 0, 0.4);
+	backdrop-filter: blur(10px);
+}
+
+.nav-buttons {
+	display: flex;
+	gap: 16px;
+}
+
+.nav-btn {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: none;
+	background-color: rgba(0, 0, 0, 0.7);
+	color: #fff;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s ease;
+}
+
+.nav-btn:hover {
+	background-color: rgba(0, 0, 0, 0.9);
+}
+
+.profile-dropdown {
+	display: flex;
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.7);
+	padding: 2px 8px 2px 2px;
+	border-radius: 20px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.profile-dropdown:hover {
+	background-color: rgba(0, 0, 0, 0.9);
+}
+
+.profile-img {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	margin-right: 8px;
+}
+
+.profile-dropdown span {
+	font-size: 14px;
+	font-weight: 700;
+	margin-right: 8px;
+}
+
+.profile-dropdown i {
+	font-size: 12px;
+}
+
+/* Content */
+.content {
+	flex: 1;
+	padding: 24px 40px 40px 40px;
+	overflow-y: auto;
+	/* Force a scrollable viewport region so the content above the fixed player can scroll
+	   Height = viewport height - topbar (60px) - player bar (90px) */
+	/* updated to match reduced player-bar height (64px) */
+	height: calc(100vh - 60px - 64px);
+}
+
+.content::-webkit-scrollbar {
+	width: 12px;
+}
+
+.content::-webkit-scrollbar-track {
+	background: rgba(0, 0, 0, 0.1);
+}
+
+.content::-webkit-scrollbar-thumb {
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 6px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+	background: rgba(255, 255, 255, 0.5);
+}
+
+/* Featured Section */
+.featured-section {
+	margin-bottom: 40px;
+}
+
+.featured-section h1 {
+	font-size: 36px;
+	font-weight: 700;
+	margin-bottom: 24px;
+}
+
+.featured-grid {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 12px;
+	max-width: 800px;
+}
+
+.featured-item {
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	padding: 12px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	overflow: hidden;
+	min-height: 80px;
+}
+
+.featured-item:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+}
+
+.featured-item img {
+	width: 56px;
+	height: 56px;
+	border-radius: 6px;
+	margin-right: 20px;
+}
+
+.featured-item span {
+	font-weight: 700;
+	font-size: 18px;
+	flex: 1;
+}
+
+.play-btn {
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	background-color: #1db954;
+	border: none;
+	color: #000;
+	font-size: 18px;
+	cursor: pointer;
+	position: absolute;
+	right: 12px;
+	opacity: 0;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.featured-item:hover .play-btn {
+	opacity: 1;
+	transform: scale(1.05);
+}
+
+.play-btn:hover {
+	transform: scale(1.1);
+	background-color: #1ed760;
+}
+
+/* Playlists Section */
+.playlists-section {
+	margin-bottom: 56px;
+}
+
+.section-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	/* reduce gap so the title sits closer above the cards */
+	/* moved header slightly higher and ensured it stacks above cards */
+	margin-bottom: 16px;
+	position: relative;
+	z-index: 3;
+}
+
+.section-header h2 {
+	font-size: 28px;
+	font-weight: 700;
+}
+
+.show-all {
+	color: #b3b3b3;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 1.5px;
+	transition: color 0.3s ease;
+}
+
+.show-all:hover {
+	color: #fff;
+}
+
+.cards-grid {
+	display: grid;
+	/* tighter columns so more cards fit and height is reduced */
+	/* reduced minimum card width so more cards fit horizontally */
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 12px;
+	/* keep a positive gap so the header doesn't get overlapped by the cards */
+	margin-top: 8px;
+}
+
+.card {
+	background-color: #181818;
+	border-radius: 12px;
+	padding: 8px; /* reduced padding to make cards more compact */
+	cursor: pointer;
+	transition: all 0.3s ease;
+	position: relative;
+	min-height: 180px; /* reduced min height so cards fit better */
+}
+
+.card:hover {
+	background-color: #282828;
+}
+
+.card-image {
+	position: relative;
+	margin-bottom: 12px; /* smaller gap */
+}
+
+.card-image img {
+	width: 100%;
+	height: 110px; /* reduced visual height so full card is visible */
+	border-radius: 12px;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+	object-fit: cover;
+}
+
+.card-play-btn {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	background-color: #1db954;
+	border: none;
+	color: #000;
+	font-size: 18px;
+	cursor: pointer;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	opacity: 0;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+.card:hover .card-play-btn {
+	opacity: 1;
+	transform: translateY(-12px);
+}
+
+.card-play-btn:hover {
+	transform: translateY(-12px) scale(1.05);
+	background-color: #1ed760;
+}
+
+.card h3 {
+	font-size: 16px;
+	font-weight: 700;
+	margin-bottom: 8px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	line-height: 1.3;
+}
+
+.card p {
+	color: #b3b3b3;
+	font-size: 14px;
+	line-height: 1.4;
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+/* Player Bar */
+.player-bar {
+	height: 64px; /* reduced height so more cards are visible */
+	background-color: #181818;
+	border-top: 1px solid #282828;
+	display: flex;
+	align-items: center;
+	padding: 0 12px; /* slightly smaller horizontal padding */
+	justify-content: space-between;
+}
+
+.now-playing {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	width: 30%;
+}
+
+.current-song-img {
+	width: 56px;
+	height: 56px;
+	border-radius: 4px;
+	margin-right: 12px;
+}
+
+.song-info {
+	min-width: 0;
+	margin-right: 12px;
+}
+
+.song-info h4 {
+	font-size: 14px;
+	font-weight: 400;
+	margin-bottom: 4px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.song-info p {
+	font-size: 11px;
+	color: #b3b3b3;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.song-actions {
+	display: flex;
+	gap: 8px;
+}
+
+.action-btn {
+	width: 32px;
+	height: 32px;
+	background: none;
+	border: none;
+	color: #b3b3b3;
+	cursor: pointer;
+	transition: color 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.action-btn:hover {
+	color: #fff;
+}
+
+/* Player Controls */
+.player-controls {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 40%;
+	max-width: 722px;
+}
+
+.control-buttons {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-bottom: 8px;
+}
+
+.control-btn {
+	width: 32px;
+	height: 32px;
+	background: none;
+	border: none;
+	color: #b3b3b3;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.control-btn:hover {
+	color: #fff;
+	transform: scale(1.05);
+}
+
+.main-play-btn {
+	width: 32px;
+	height: 32px;
+	background-color: #fff;
+	color: #000;
+	border-radius: 50%;
+	font-size: 14px;
+}
+
+.main-play-btn:hover {
+	background-color: #fff;
+	transform: scale(1.05);
+}
+
+.progress-container {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 12px;
+}
+
+.time-current,
+.time-total {
+	font-size: 11px;
+	color: #b3b3b3;
+	min-width: 40px;
+	text-align: center;
+}
+
+.progress-bar {
+	flex: 1;
+	height: 4px;
+	background-color: #4f4f4f;
+	border-radius: 2px;
+	position: relative;
+	cursor: pointer;
+}
+
+.progress-fill {
+	height: 100%;
+	background-color: #fff;
+	border-radius: 2px;
+	width: 23%;
+	position: relative;
+}
+
+.progress-handle {
+	width: 12px;
+	height: 12px;
+	background-color: #fff;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	right: -6px;
+	transform: translateY(-50%);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.progress-bar:hover .progress-handle {
+	opacity: 1;
+}
+
+.progress-bar:hover .progress-fill {
+	background-color: #1db954;
+}
+
+/* Volume Controls */
+.volume-controls {
+	display: flex;
+	align-items: center;
+	width: 30%;
+	justify-content: flex-end;
+	gap: 12px;
+}
+
+.volume-bar {
+	width: 93px;
+	height: 4px;
+	background-color: #4f4f4f;
+	border-radius: 2px;
+	position: relative;
+	cursor: pointer;
+}
+
+.volume-fill {
+	height: 100%;
+	background-color: #fff;
+	border-radius: 2px;
+	width: 100%;
+	position: relative;
+}
+
+.volume-handle {
+	width: 12px;
+	height: 12px;
+	background-color: #fff;
+	border-radius: 50%;
+	position: absolute;
+	top: 50%;
+	right: -6px;
+	transform: translateY(-50%);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.volume-bar:hover .volume-handle {
+	opacity: 1;
+}
+
+.volume-bar:hover .volume-fill {
+	background-color: #1db954;
+}
+
+@media (max-width: 768px) {
+	.sidebar {
+		width: 60px;
+	}
+    
+	.sidebar-header h2,
+	.sidebar-nav li span,
+	.sidebar-section h3,
+	.playlists li {
+		display: none;
+	}
+    
+	.featured-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+    
+	.cards-grid {
+		grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+		gap: 16px;
+	}
+    
+	.now-playing {
+		width: 25%;
+	}
+    
+	.player-controls {
+		width: 50%;
+	}
+    
+	.volume-controls {
+		width: 25%;
+	}
+    
+	.song-actions {
+		display: none;
+	}
+}
+
+@media (max-width: 480px) {
+	.sidebar {
+		display: none;
+	}
+    
+	.main-content {
+		width: 100%;
+	}
+    
+	.featured-grid {
+		grid-template-columns: 1fr;
+		gap: 4px;
+	}
+    
+	.cards-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+    
+	.player-bar {
+		padding: 0 8px;
+	}
+    
+	.volume-controls {
+		display: none;
+	}
+    
+	.player-controls {
+		width: 70%;
+	}
+    
+	.now-playing {
+		width: 30%;
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.card {
+	animation: fadeIn 0.5s ease forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+
+.sidebar-nav li,
+.playlists li,
+.featured-item,
+.card {
+	position: relative;
+	overflow: hidden;
+}
+
+.sidebar-nav li::before,
+.playlists li::before {
+	content: '';
+	position: absolute;
+	left: -100%;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.1), transparent);
+	transition: left 0.5s;
+}
+
+.sidebar-nav li:hover::before,
+.playlists li:hover::before {
+	left: 100%;
+}
+
+.sidebar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 64px; /* updated to match new player-bar height */
+	z-index: 20;
+	overflow-y: auto;
+}
+
+.main-container {
+	margin-left: 240px;
+	/* reduced the subtraction to account for smaller player bar */
+	min-height: calc(100vh - 64px);
+	display: block;
+}
+
+.main-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.topbar {
+	position: sticky;
+	top: 0;
+	width: 100%;
+	max-width: 980px;
+	margin: 0 auto;
+	z-index: 15;
+}
+
+.content {
+	width: 100%;
+	max-width: 980px;
+	/* keep extra bottom spacing (originally 30px above player) so content can scroll comfortably */
+	padding: 24px 20px 94px 20px; /* 64px player + 30px breathing room = 94px */
+	box-sizing: border-box;
+}
+
+.player-bar {
+	position: fixed;
+	left: 240px;
+	right: 0;
+	bottom: 0;
+	z-index: 30;
+}
+
+@media (max-width: 768px) {
+	.main-container {
+		margin-left: 60px
+	}
+	.player-bar {
+		left: 60px;
+	}
+}
+
+@media (max-width: 480px) {
+	.sidebar {
+		display: none;
+	}
+	.main-container {
+		margin-left: 0;
+	}
+	.player-bar {
+		left: 0;
+	}
+	.topbar {
+		max-width: 100%;
+	}
+	.content {
+		padding-left: 16px;
+		padding-right: 16px;
+	}
+}
+

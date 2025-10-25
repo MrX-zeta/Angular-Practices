@@ -1,12 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-audio-controller',
-  standalone: true,
+  standalone: false,
   templateUrl: './audio-controller.html',
-  styleUrls: ['./audio-controller.css'],
-  imports: [CommonModule]
+  styleUrl: './audio-controller.css'
 })
 export class AudioController {
 
