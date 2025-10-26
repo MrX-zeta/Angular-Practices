@@ -21,6 +21,10 @@ export class App {
   featuredImages: string[] = [];
   cardsImages: string[] = [];
   userAvatar: string = 'https://via.placeholder.com/32';
+  // Progress-related bindings
+  progress = this.musicService.progress;
+  duration = this.musicService.duration;
+  currentTime = this.musicService.currentTime;
   
   constructor() {
     (window as any).musicService = this.musicService;
@@ -87,6 +91,70 @@ export class App {
   testPreviousSong() {
     console.log('🔄 Probando canción anterior...');
     this.musicService.previousSong();
+  }
+
+  // Play / Pause desde la barra inferior
+  playPause(): void {
+    this.musicService.playPause();
+  }
+
+  // Progress UI helpers
+  formatTime(): string {
+    const time = this.currentTime();
+    const minutes = Math.floor(time / 60) || 0;
+    const seconds = Math.floor(time % 60) || 0;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  formatDuration(): string {
+    const time = this.duration();
+    const minutes = Math.floor(time / 60) || 0;
+    const seconds = Math.floor(time % 60) || 0;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+
+  // Called when user clicks on the progress bar
+  seek(event: MouseEvent) {
+    const bar = (event.currentTarget as HTMLElement);
+    const rect = bar.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const pct = Math.max(0, Math.min(1, clickX / rect.width)) * 100;
+    // delegate to service (expects 0-100)
+    if (typeof this.musicService.setProgress === 'function') {
+      this.musicService.setProgress(pct);
+    }
+  }
+
+  startSeek(event: PointerEvent) {
+    event.preventDefault();
+    const bar = (event.currentTarget as HTMLElement);
+
+    const moveHandler = (e: PointerEvent) => {
+      const rect = bar.getBoundingClientRect();
+      const clientX = (e as PointerEvent).clientX;
+      const clickX = clientX - rect.left;
+      const pct = Math.max(0, Math.min(1, clickX / rect.width)) * 100;
+      if (typeof this.musicService.setProgress === 'function') {
+        this.musicService.setProgress(pct);
+      }
+    };
+
+    const upHandler = (e: PointerEvent) => {
+      // one final move to set exact position
+      moveHandler(e);
+      window.removeEventListener('pointermove', moveHandler);
+      window.removeEventListener('pointerup', upHandler);
+      (bar as HTMLElement).releasePointerCapture?.((e as PointerEvent).pointerId);
+    };
+
+    // Capture pointer events to the window so dragging outside the bar still works
+    window.addEventListener('pointermove', moveHandler);
+    window.addEventListener('pointerup', upHandler);
+    try {
+      (bar as HTMLElement).setPointerCapture?.((event as PointerEvent).pointerId);
+    } catch (err) {
+      // ignore if not supported
+    }
   }
 
   // Método para mostrar playlist actual

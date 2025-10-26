@@ -127,6 +127,19 @@
   background: linear-gradient(45deg, #1ed760, #1db954);
 }
 
+/* Icon image inside play/pause button (using Iconify SVG endpoints) */
+.play-pause-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+
+/* Hide Font Awesome fallback by default (SVG will be used). If you prefer
+   to show FA when external SVGs fail, remove this rule. */
+.play-pause-btn i.fa-solid {
+  display: none;
+}
+
 /* Información de la playlist */
 .playlist-info {
   background: rgba(0, 0, 0, 0.3);

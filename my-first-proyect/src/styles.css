@@ -517,17 +517,38 @@ body {
 }
 
 .main-play-btn {
-	width: 32px;
-	height: 32px;
-	background-color: #fff;
-	color: #000;
+	width: 40px;
+	height: 40px;
+	background: linear-gradient(45deg, #1db954, #1ed760);
+	color: #ffffff; /* svg uses currentColor */
 	border-radius: 50%;
 	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 4px 12px rgba(29,185,84,0.2);
+	border: none;
 }
 
 .main-play-btn:hover {
-	background-color: #fff;
 	transform: scale(1.05);
+	filter: brightness(1.05);
+}
+
+/* Ensure the inline svg is visible and sized */
+.main-play-btn .main-play-icon {
+	width: 18px;
+	height: 18px;
+	display: block;
+	fill: currentColor;
+}
+
+/* Pause icon uses same sizing */
+.main-play-btn .main-pause-icon {
+	width: 18px;
+	height: 18px;
+	display: block;
+	fill: currentColor;
 }
 
 .progress-container {
@@ -558,7 +579,7 @@ body {
 	height: 100%;
 	background-color: #fff;
 	border-radius: 2px;
-	width: 23%;
+	width: 0%; /* will be set via inline style from Angular */
 	position: relative;
 }
 
@@ -569,10 +590,10 @@ body {
 	border-radius: 50%;
 	position: absolute;
 	top: 50%;
-	right: -6px;
-	transform: translateY(-50%);
+	left: 0%; /* will be adjusted via inline style */
+	transform: translate(-50%, -50%);
 	opacity: 0;
-	transition: opacity 0.3s ease;
+	transition: opacity 0.3s ease, left 0.12s linear;
 }
 
 .progress-bar:hover .progress-handle {

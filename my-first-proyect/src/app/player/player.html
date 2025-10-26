@@ -24,7 +24,13 @@
         class="control-btn play-pause-btn" 
         (click)="playPause()"
         [title]="isPlaying() ? 'Pausar' : 'Reproducir'">
-        <i class="fa-solid" [class.fa-play]="!isPlaying()" [class.fa-pause]="isPlaying()"></i>
+        <!-- Use Iconify public SVG endpoints for play/pause icons (free, no auth) -->
+        <img
+          class="play-pause-icon"
+          [src]="isPlaying() ? 'https://api.iconify.design/mdi/pause.svg' : 'https://api.iconify.design/mdi/play.svg'"
+          alt="{{ isPlaying() ? 'Pausar' : 'Reproducir' }}" />
+        <!-- Font Awesome fallback (kept for environments where external SVGs are blocked) -->
+        <i class="fa-solid" [class.fa-play]="!isPlaying()" [class.fa-pause]="isPlaying()" aria-hidden="true"></i>
       </button>
       
       <button 
