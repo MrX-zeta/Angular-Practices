@@ -9,7 +9,6 @@ import { Image } from '../interfaces/image';
   styleUrls: ['./playlist.css']
 })
 export class Playlist {
-  // The parent passes signals (callable) for playlist and cover; type as Signal so template can call them
   @Input() playlist!: Signal<Track[]>;
   @Input() cover!: Signal<Image>;
 }

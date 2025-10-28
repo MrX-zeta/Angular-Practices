@@ -15,10 +15,6 @@ export class SpotifyPlaylistService {
   ){ }
 
   getPlaylist(token: string): Observable<SpotifyPlaylistResponse>{
-
-
-    
-
     return this._http.get<SpotifyPlaylistResponse>(
       "https://api.spotify.com/v1/playlists/5J7iA3jjhiTjoZAK7a3Y8A",
       {

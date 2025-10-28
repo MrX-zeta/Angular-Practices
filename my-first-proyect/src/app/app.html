@@ -1,5 +1,4 @@
 <div class="main-container">
-  <!-- Sidebar -->
   <div class="sidebar">
     <div class="sidebar-header">
       <i class="fab fa-spotify"></i>
@@ -8,8 +7,8 @@
       
     <nav class="sidebar-nav">
       <ul>
-        <li><i class="fas fa-home"></i> Inicio</li>
-        <li><i class="fas fa-search"></i> Buscar</li>
+        <li (click)="showSection('home')" [class.active]="activeSection() === 'home'"><i class="fas fa-home"></i> Inicio</li>
+        <li (click)="showSection('search')" [class.active]="activeSection() === 'search'"><i class="fas fa-search"></i> Buscar</li>
         <li><i class="fas fa-book"></i> Tu biblioteca</li>
       </ul>
     </nav>
@@ -25,7 +24,6 @@
     </div>
   </div>
 
-  <!-- Main Content -->
   <div class="main-content">
     <div class="topbar">
       <div class="nav-buttons">
@@ -42,128 +40,132 @@
     </div>
 
     <div class="content">
-      <!-- Featured Section -->
-      <section class="featured-section">
-        <h1>Buenas tardes</h1>
-        <div class="featured-grid">
-          <div class="featured-item">
-            <img [src]="featuredImages[0] || 'https://via.placeholder.com/60'" alt="Album">
-            <span>Canciones que te gustan</span>
-            <button class="play-btn"><i class="fas fa-play"></i></button>
+      <section class="home-section" *ngIf="activeSection() === 'home'">
+        <section class="featured-section">
+          <h1>Buenas tardes</h1>
+          <div class="featured-grid">
+            <div class="featured-item">
+              <img [src]="featuredImages[0] || 'https://via.placeholder.com/60'" alt="Album">
+              <span>Canciones que te gustan</span>
+              <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="featured-item">
+              <img [src]="featuredImages[1] || 'https://via.placeholder.com/60'" alt="Album">
+              <span>Mix de los 80s</span>
+              <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="featured-item">
+              <img [src]="featuredImages[2] || 'https://via.placeholder.com/60'" alt="Album">
+              <span>Rock en Español</span>
+              <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
+            <div class="featured-item">
+              <img [src]="featuredImages[3] || 'https://via.placeholder.com/60'" alt="Album">
+              <span>Top Hits 2024</span>
+              <button class="play-btn"><i class="fas fa-play"></i></button>
+            </div>
           </div>
-          <div class="featured-item">
-            <img [src]="featuredImages[1] || 'https://via.placeholder.com/60'" alt="Album">
-            <span>Mix de los 80s</span>
-            <button class="play-btn"><i class="fas fa-play"></i></button>
-          </div>
-          <div class="featured-item">
-            <img [src]="featuredImages[2] || 'https://via.placeholder.com/60'" alt="Album">
-            <span>Rock en Español</span>
-            <button class="play-btn"><i class="fas fa-play"></i></button>
-          </div>
-          <div class="featured-item">
-            <img [src]="featuredImages[3] || 'https://via.placeholder.com/60'" alt="Album">
-            <span>Top Hits 2024</span>
-            <button class="play-btn"><i class="fas fa-play"></i></button>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Playlists Section -->
-      <section class="playlists-section">
-        <div class="section-header">
-          <h2>Hecho para ti</h2>
-          <a href="#" class="show-all">MOSTRAR TODO</a>
-        </div>
-        <div class="cards-grid">
-          <div class="card">
+        <section class="playlists-section">
+          <div class="section-header">
+            <h2>Hecho para ti</h2>
+            <a href="#" class="show-all">MOSTRAR TODO</a>
+          </div>
+          <div class="cards-grid">
+            <div class="card">
+                <div class="card-image">
+                <img [src]="cardsImages[0] || 'https://via.placeholder.com/160'" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Mix Diario 1</h3>
+              <p>Arctic Monkeys, The Strokes, Foster the People y más</p>
+            </div>
+            <div class="card">
               <div class="card-image">
-              <img [src]="cardsImages[0] || 'https://via.placeholder.com/160'" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
+                <img [src]="cardsImages[1] || 'https://via.placeholder.com/160'" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Mix Diario 2</h3>
+              <p>Coldplay, Imagine Dragons, OneRepublic y más</p>
             </div>
-            <h3>Mix Diario 1</h3>
-            <p>Arctic Monkeys, The Strokes, Foster the People y más</p>
-          </div>
-          <div class="card">
-            <div class="card-image">
-              <img [src]="cardsImages[1] || 'https://via.placeholder.com/160'" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
+            <div class="card">
+              <div class="card-image">
+                <img [src]="cardsImages[2] || 'https://via.placeholder.com/160'" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Discover Weekly</h3>
+              <p>Tu mezcla semanal de música nueva</p>
             </div>
-            <h3>Mix Diario 2</h3>
-            <p>Coldplay, Imagine Dragons, OneRepublic y más</p>
-          </div>
-          <div class="card">
-            <div class="card-image">
-              <img [src]="cardsImages[2] || 'https://via.placeholder.com/160'" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
+            <div class="card">
+              <div class="card-image">
+                <img [src]="cardsImages[3] || 'https://via.placeholder.com/160'" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Release Radar</h3>
+              <p>Nuevos lanzamientos de tus artistas favoritos</p>
             </div>
-            <h3>Discover Weekly</h3>
-            <p>Tu mezcla semanal de música nueva</p>
-          </div>
-          <div class="card">
-            <div class="card-image">
-              <img [src]="cardsImages[3] || 'https://via.placeholder.com/160'" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
+            <div class="card">
+              <div class="card-image">
+                <img [src]="cardsImages[4] || 'https://via.placeholder.com/160'" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Rock Clásico</h3>
+              <p>Los grandes clásicos del rock de todos los tiempos</p>
             </div>
-            <h3>Release Radar</h3>
-            <p>Nuevos lanzamientos de tus artistas favoritos</p>
           </div>
-          <div class="card">
-            <div class="card-image">
-              <img [src]="cardsImages[4] || 'https://via.placeholder.com/160'" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
+        </section>
+
+        <section class="playlists-section">
+          <div class="section-header">
+            <h2>Escuchado recientemente</h2>
+            <a href="#" class="show-all">MOSTRAR TODO</a>
+          </div>
+          <div class="cards-grid">
+            <div class="card">
+              <div class="card-image">
+                <img src="https://via.placeholder.com/160" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>AM</h3>
+              <p>Arctic Monkeys</p>
             </div>
-            <h3>Rock Clásico</h3>
-            <p>Los grandes clásicos del rock de todos los tiempos</p>
+            <div class="card">
+              <div class="card-image">
+                <img src="https://via.placeholder.com/160" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>The New Abnormal</h3>
+              <p>The Strokes</p>
+            </div>
+            <div class="card">
+              <div class="card-image">
+                <img src="https://via.placeholder.com/160" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Parachutes</h3>
+              <p>Coldplay</p>
+            </div>
+            <div class="card">
+              <div class="card-image">
+                <img src="https://via.placeholder.com/160" alt="Album">
+                <button class="card-play-btn"><i class="fas fa-play"></i></button>
+              </div>
+              <h3>Night Visions</h3>
+              <p>Imagine Dragons</p>
+            </div>
           </div>
-        </div>
+        </section>
       </section>
 
-      <!-- Recently Played Section -->
-      <section class="playlists-section">
-        <div class="section-header">
-          <h2>Escuchado recientemente</h2>
-          <a href="#" class="show-all">MOSTRAR TODO</a>
-        </div>
-        <div class="cards-grid">
-          <div class="card">
-            <div class="card-image">
-              <img src="https://via.placeholder.com/160" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
-            </div>
-            <h3>AM</h3>
-            <p>Arctic Monkeys</p>
-          </div>
-          <div class="card">
-            <div class="card-image">
-              <img src="https://via.placeholder.com/160" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
-            </div>
-            <h3>The New Abnormal</h3>
-            <p>The Strokes</p>
-          </div>
-          <div class="card">
-            <div class="card-image">
-              <img src="https://via.placeholder.com/160" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
-            </div>
-            <h3>Parachutes</h3>
-            <p>Coldplay</p>
-          </div>
-          <div class="card">
-            <div class="card-image">
-              <img src="https://via.placeholder.com/160" alt="Album">
-              <button class="card-play-btn"><i class="fas fa-play"></i></button>
-            </div>
-            <h3>Night Visions</h3>
-            <p>Imagine Dragons</p>
-          </div>
-        </div>
+      <section class="search-section" *ngIf="activeSection() === 'search'">
+        <h1>Buscar en Spotify</h1>
+        <p class="search-subtitle">Encuentra canciones, artistas y álbumes</p>
+        <app-search-section></app-search-section>
       </section>
     </div>
   </div>
 
-  <!-- Player Bar -->
   <div class="player-bar">
     <div class="now-playing">
       <img [src]="currentSong()?.caratula || cardsImages[0] || 'https://via.placeholder.com/56'" alt="Current Song" class="current-song-img">
@@ -181,15 +183,12 @@
       <div class="control-buttons">
         <button class="control-btn"><i class="fas fa-random"></i></button>
         <button class="control-btn"><i class="fas fa-step-backward"></i></button>
-        <!-- Play/Pause button built from scratch: toggles SVGs based on isPlaying() and calls App.playPause() -->
         <button class="control-btn main-play-btn" (click)="playPause()" [attr.aria-label]="isPlaying() ? 'Pausar' : 'Reproducir'">
-          <!-- Show Play when not playing -->
           <svg *ngIf="!isPlaying()" class="main-play-icon" viewBox="0 0 64 64" width="18" height="18" aria-hidden="true">
             <title>Reproducir</title>
             <polygon points="18,12 54,32 18,52" fill="currentColor" />
           </svg>
 
-          <!-- Show Pause when playing -->
           <svg *ngIf="isPlaying()" class="main-pause-icon" viewBox="0 0 64 64" width="18" height="18" aria-hidden="true">
             <title>Pausar</title>
             <rect x="18" y="12" width="8" height="40" fill="currentColor"></rect>

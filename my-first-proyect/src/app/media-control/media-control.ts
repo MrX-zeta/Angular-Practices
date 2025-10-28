@@ -10,14 +10,12 @@ import { MusicPlayerService } from '../services/music-player.service';
 export class MediaControl {
   private musicService = inject(MusicPlayerService);
   
-  // Computed properties que se actualizan automáticamente
   currentSong = this.musicService.currentSong;
   isPlaying = this.musicService.isPlaying;
   progress = this.musicService.progress;
   duration = this.musicService.duration;
   currentTime = this.musicService.currentTime;
 
-  // Formatear tiempo en MM:SS
   formatTime = computed(() => {
     const time = this.currentTime();
     const minutes = Math.floor(time / 60);

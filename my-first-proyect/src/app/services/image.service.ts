@@ -15,14 +15,12 @@ export class ImageService {
 
   constructor() {}
 
-  /** Load a list of images from picsum.photos */
   async loadImages(limit = 20): Promise<string[]> {
     try {
       const resp = await fetch(`https://picsum.photos/v2/list?limit=${limit}`);
       if (!resp.ok) return [];
       const data: PicsumImage[] = await resp.json();
       this.images = data;
-      // map to downloadable URLs with a reasonable size
       return data.map(i => `https://picsum.photos/id/${i.id}/600/600`);
     } catch (err) {
       console.error('Error loading images', err);

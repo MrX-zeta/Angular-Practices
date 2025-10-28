@@ -186,14 +186,10 @@ body {
 	font-size: 12px;
 }
 
-/* Content */
 .content {
 	flex: 1;
 	padding: 24px 40px 40px 40px;
 	overflow-y: auto;
-	/* Force a scrollable viewport region so the content above the fixed player can scroll
-	   Height = viewport height - topbar (60px) - player bar (90px) */
-	/* updated to match reduced player-bar height (64px) */
 	height: calc(100vh - 60px - 64px);
 }
 
@@ -214,7 +210,6 @@ body {
 	background: rgba(255, 255, 255, 0.5);
 }
 
-/* Featured Section */
 .featured-section {
 	margin-bottom: 40px;
 }
@@ -291,7 +286,6 @@ body {
 	background-color: #1ed760;
 }
 
-/* Playlists Section */
 .playlists-section {
 	margin-bottom: 56px;
 }
@@ -300,8 +294,6 @@ body {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	/* reduce gap so the title sits closer above the cards */
-	/* moved header slightly higher and ensured it stacks above cards */
 	margin-bottom: 16px;
 	position: relative;
 	z-index: 3;
@@ -327,22 +319,19 @@ body {
 
 .cards-grid {
 	display: grid;
-	/* tighter columns so more cards fit and height is reduced */
-	/* reduced minimum card width so more cards fit horizontally */
 	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	gap: 12px;
-	/* keep a positive gap so the header doesn't get overlapped by the cards */
 	margin-top: 8px;
 }
 
 .card {
 	background-color: #181818;
 	border-radius: 12px;
-	padding: 8px; /* reduced padding to make cards more compact */
+	padding: 8px;
 	cursor: pointer;
 	transition: all 0.3s ease;
 	position: relative;
-	min-height: 180px; /* reduced min height so cards fit better */
+	min-height: 180px;
 }
 
 .card:hover {
@@ -351,12 +340,12 @@ body {
 
 .card-image {
 	position: relative;
-	margin-bottom: 12px; /* smaller gap */
+	margin-bottom: 12px;
 }
 
 .card-image img {
 	width: 100%;
-	height: 110px; /* reduced visual height so full card is visible */
+	height: 110px;
 	border-radius: 12px;
 	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 	object-fit: cover;
@@ -413,14 +402,13 @@ body {
 	overflow: hidden;
 }
 
-/* Player Bar */
 .player-bar {
-	height: 64px; /* reduced height so more cards are visible */
+	height: 64px;
 	background-color: #181818;
 	border-top: 1px solid #282828;
 	display: flex;
 	align-items: center;
-	padding: 0 12px; /* slightly smaller horizontal padding */
+	padding: 0 12px;
 	justify-content: space-between;
 }
 
@@ -482,7 +470,6 @@ body {
 	color: #fff;
 }
 
-/* Player Controls */
 .player-controls {
 	display: flex;
 	flex-direction: column;
@@ -520,7 +507,7 @@ body {
 	width: 40px;
 	height: 40px;
 	background: linear-gradient(45deg, #1db954, #1ed760);
-	color: #ffffff; /* svg uses currentColor */
+	color: #ffffff;
 	border-radius: 50%;
 	font-size: 14px;
 	display: flex;
@@ -535,7 +522,6 @@ body {
 	filter: brightness(1.05);
 }
 
-/* Ensure the inline svg is visible and sized */
 .main-play-btn .main-play-icon {
 	width: 18px;
 	height: 18px;
@@ -543,7 +529,6 @@ body {
 	fill: currentColor;
 }
 
-/* Pause icon uses same sizing */
 .main-play-btn .main-pause-icon {
 	width: 18px;
 	height: 18px;
@@ -579,7 +564,7 @@ body {
 	height: 100%;
 	background-color: #fff;
 	border-radius: 2px;
-	width: 0%; /* will be set via inline style from Angular */
+	width: 0%;
 	position: relative;
 }
 
@@ -590,7 +575,7 @@ body {
 	border-radius: 50%;
 	position: absolute;
 	top: 50%;
-	left: 0%; /* will be adjusted via inline style */
+	left: 0%;
 	transform: translate(-50%, -50%);
 	opacity: 0;
 	transition: opacity 0.3s ease, left 0.12s linear;
@@ -604,7 +589,6 @@ body {
 	background-color: #1db954;
 }
 
-/* Volume Controls */
 .volume-controls {
 	display: flex;
 	align-items: center;
@@ -774,14 +758,13 @@ body {
 	position: fixed;
 	top: 0;
 	left: 0;
-	bottom: 64px; /* updated to match new player-bar height */
+	bottom: 64px;
 	z-index: 20;
 	overflow-y: auto;
 }
 
 .main-container {
 	margin-left: 240px;
-	/* reduced the subtraction to account for smaller player bar */
 	min-height: calc(100vh - 64px);
 	display: block;
 }
@@ -804,8 +787,7 @@ body {
 .content {
 	width: 100%;
 	max-width: 980px;
-	/* keep extra bottom spacing (originally 30px above player) so content can scroll comfortably */
-	padding: 24px 20px 94px 20px; /* 64px player + 30px breathing room = 94px */
+	padding: 24px 20px 94px 20px;
 	box-sizing: border-box;
 }
 

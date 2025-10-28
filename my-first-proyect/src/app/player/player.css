@@ -22,7 +22,6 @@
   height: 100%;
 }
 
-/* Información de la canción actual */
 .current-song-info {
   display: flex;
   align-items: center;
@@ -75,7 +74,6 @@
   white-space: nowrap;
 }
 
-/* Controles del reproductor */
 .player-controls {
   display: flex;
   justify-content: center;
@@ -127,20 +125,16 @@
   background: linear-gradient(45deg, #1ed760, #1db954);
 }
 
-/* Icon image inside play/pause button (using Iconify SVG endpoints) */
 .play-pause-icon {
   width: 28px;
   height: 28px;
   display: block;
 }
 
-/* Hide Font Awesome fallback by default (SVG will be used). If you prefer
-   to show FA when external SVGs fail, remove this rule. */
 .play-pause-btn i.fa-solid {
   display: none;
 }
 
-/* Información de la playlist */
 .playlist-info {
   background: rgba(0, 0, 0, 0.3);
   border-radius: 15px;
@@ -163,7 +157,6 @@
   margin-bottom: 20px;
 }
 
-/* Vista previa de la playlist */
 .playlist-preview {
   max-height: 400px;
   overflow-y: auto;
@@ -246,7 +239,6 @@
   50% { opacity: 0.5; }
 }
 
-/* Scrollbar personalizado para playlist */
 .playlist-preview::-webkit-scrollbar {
   width: 6px;
 }
@@ -265,7 +257,6 @@
   background: #1ed760;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .player-container {
     padding: 20px;

@@ -11,11 +11,11 @@ import { SongInfo } from './song-info/song-info';
 import { Playlist } from './playlist/playlist';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './interceptors/auth-interceptor';
+import { addAuthHeaderInterceptor } from './interceptors/core/add-auth-header-interceptor';
+import { Player } from './player/player';
 
-// Importar componentes de búsqueda
 import { SearchSection } from '../search/search-bar/search-section/search-section';
 import { SearchBarModule } from '../search/search-bar/search-bar.module';
-import { Player } from './player/player';
 
 @NgModule({
   declarations: [
@@ -32,14 +32,13 @@ import { Player } from './player/player';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    
-    SearchBarModule,
+    SearchBarModule
   ],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideHttpClient(
-      withInterceptors([authInterceptor])
+      withInterceptors([authInterceptor, addAuthHeaderInterceptor])
     )
   ],
   bootstrap: [App]

@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +14,19 @@ export class SpotifyLoginService {
 
   getToken(): Observable<any> {
     const body = new HttpParams()
-      .set("grant_type", "client_credentials")
-      .set("client_id", "9944d71af81a4b06a0722ac659d82858")
-      .set("client_secret", "498b8a8723794bf5aefe693197effd66");
+      .set('grant_type', 'client_credentials');
+
+  const credentials = `${environment.spotify.clientId}:${environment.spotify.clientSecret}`;
+  const encodedCredentials = btoa(credentials);
+
     return this._http.post<any>(
-      "https://accounts.spotify.com/api/token", 
+      environment.spotify.tokenUrl,
       body.toString(),
       {
-        headers: {'Content-Type': "application/x-www-form-urlencoded"}
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': `Basic ${encodedCredentials}`
+        }
       }
     );
 

@@ -1,29 +1,51 @@
-// src/app/services/spotify.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({providedIn: 'root'})
 export class SpotifyService {
-  private clientId = '46ce3fe18b554406a71d8af46fe351c7';
-  private clientSecret = 'd077bb07eb4544179dd44d95167ef0e3';
+  private clientId = environment.spotify.clientId;
+  private clientSecret = environment.spotify.clientSecret;
   
-  // URLs de redirección (deben estar registradas en Spotify Dashboard)
-  private redirectUri = 'https://www.google.com';
+  private redirectUri = environment.spotify.redirectUri;
 
   constructor(private http: HttpClient) {}
   
   async getAccessToken(): Promise<string> {
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa(this.clientId + ':' + this.clientSecret)
-      },
-      body: 'grant_type=client_credentials'
-    });
+    console.log('Obteniendo access token...');
     
-    const data = await response.json();
-    return data.access_token;
+    try {
+      const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': 'Basic ' + btoa(this.clientId + ':' + this.clientSecret)
+        },
+        body: 'grant_type=client_credentials'
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data.access_token) {
+        throw new Error('No se recibió access_token en la respuesta');
+      }
+      
+      console.log(' Token obtenido exitosamente');
+      console.log('🕐 Expira en:', data.expires_in, 'segundos');
+      
+      const expiresAt = Date.now() + (data.expires_in * 1000);
+      localStorage.setItem('spotify_access_token', data.access_token);
+      localStorage.setItem('spotify_token_expires_at', expiresAt.toString());
+      
+      return data.access_token;
+    } catch (error) {
+      console.error(' Error obteniendo access token:', error);
+      throw error;
+    }
   }
 
   
@@ -51,18 +73,16 @@ export class SpotifyService {
     console.log('Redirect URI:', this.redirectUri);
     console.log('URL completa:', authUrl);
     
-    // Verificar que window existe
     if (typeof window !== 'undefined') {
-      console.log('✅ Redirigiendo a Spotify...');
+      console.log('Redirigiendo a Spotify...');
       window.location.href = authUrl;
     } else {
-      console.error('❌ Window no está disponible');
+      console.error('Window no está disponible');
     }
   }
 
-  // Método para intercambiar código por token de acceso completo
   async getTokenFromCode(code: string): Promise<any> {
-    console.log('🔄 Intercambiando código por token...');
+    console.log(' Intercambiando código por token...');
     
     const response = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
@@ -74,48 +94,53 @@ export class SpotifyService {
     });
     
     const data = await response.json();
-    console.log('🎫 Token response:', data);
+    console.log('Token response:', data);
     
     if (data.access_token) {
-      // Guardar token en localStorage para uso posterior
       localStorage.setItem('spotify_access_token', data.access_token);
       localStorage.setItem('spotify_refresh_token', data.refresh_token || '');
-      console.log('✅ Token guardado exitosamente');
+      console.log(' Token guardado exitosamente');
     }
     
     return data;
   }
 
-  // Método para detectar código en URL automáticamente
   checkForSpotifyCode(): void {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     
     if (code) {
-      console.log('🎫 Código de Spotify detectado automáticamente:', code.substring(0, 20) + '...');
       this.getTokenFromCode(code).then(tokenData => {
-        console.log('✅ Token automático obtenido:', tokenData);
-        // Limpiar URL
+        console.log('Token automático obtenido:', tokenData);
         window.history.replaceState({}, document.title, window.location.pathname);
       }).catch(error => {
-        console.error('❌ Error con código automático:', error);
+        console.error('Error con código automático:', error);
       });
     }
   }
 
-  // Método para obtener token guardado o crear uno nuevo
   async getValidAccessToken(): Promise<string> {
-    // Verificar si hay código en la URL primero
+    console.log(' Verificando token de acceso...');
+    
     this.checkForSpotifyCode();
     
-    // Intentar usar token guardado
     const savedToken = localStorage.getItem('spotify_access_token');
-    if (savedToken) {
-      console.log('🎫 Usando token guardado');
-      return savedToken;
+    const expiresAt = localStorage.getItem('spotify_token_expires_at');
+    
+    if (savedToken && expiresAt) {
+      const now = Date.now();
+      const expiration = parseInt(expiresAt);
+      
+      if (now < expiration - 300000) {
+        console.log(' Usando token guardado válido');
+        return savedToken;
+      } else {
+        console.log('⚠️ Token expirado, obteniendo uno nuevo');
+        localStorage.removeItem('spotify_access_token');
+        localStorage.removeItem('spotify_token_expires_at');
+      }
     }
     
-    // Si no hay token guardado, usar client credentials
     console.log('🎫 Obteniendo nuevo token client credentials');
     return await this.getAccessToken();
   }
@@ -140,8 +165,50 @@ export class SpotifyService {
       const data = await response.json();
       return data.tracks?.items || [];
     } catch (error) {
-      console.error('❌ Error buscando tracks:', error);
+      console.error(' Error buscando tracks:', error);
       throw error;
+    }
+  }
+
+  async getTestTracksWithPreviews(): Promise<any[]> {
+    try {
+      console.log('🎵 Buscando canciones de prueba con previews...');
+      
+      const testQueries = [
+        'Shape of You Ed Sheeran',
+        'Blinding Lights The Weeknd',
+        'Bad Guy Billie Eilish',
+        'Bohemian Rhapsody Queen',
+        'Hotel California Eagles',
+        'Imagine Dragons Believer',
+        'Dua Lipa Levitating',
+        'The Chainsmokers Closer',
+        'Post Malone Circles',
+        'Ariana Grande positions'
+      ];
+
+      const allTracks = [];
+      
+      for (const query of testQueries) {
+        try {
+          const tracks = await this.searchTracks(query);
+          const tracksWithPreview = tracks.filter((track: any) => track.preview_url);
+          if (tracksWithPreview.length > 0) {
+            allTracks.push(tracksWithPreview[0]);
+            console.log(` Encontrada con preview: ${tracksWithPreview[0].name} - ${tracksWithPreview[0].artists[0].name}`);
+          }
+          
+          await new Promise(resolve => setTimeout(resolve, 200));
+        } catch (error) {
+          console.warn(`⚠️ Error buscando: ${query}`, error);
+        }
+      }
+
+      console.log(`🎵 Total de canciones con preview encontradas: ${allTracks.length}`);
+      return allTracks;
+    } catch (error) {
+      console.error(' Error obteniendo tracks de prueba:', error);
+      return [];
     }
   }
 
@@ -162,7 +229,7 @@ export class SpotifyService {
       const data = await response.json();
       return data.items || [];
     } catch (error) {
-      console.error('❌ Error obteniendo playlists:', error);
+      console.error(' Error obteniendo playlists:', error);
       throw error;
     }
   }

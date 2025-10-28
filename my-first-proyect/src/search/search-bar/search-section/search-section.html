@@ -1,32 +1,69 @@
 <div class="search-section">
-  <app-search-bar (searchResults)="onSearchResults($event)"></app-search-bar>
+  <app-search-bar 
+    (searchResults)="onSearchResults($event)" 
+    (searchStart)="onSearchStart()">
+  </app-search-bar>
   
   <div class="search-results" *ngIf="searchResults.length > 0">
-    <h3>Resultados de búsqueda</h3>
+    <h3>Resultados de búsqueda ({{ searchResults.length }})</h3>
     <div class="results-list">
-      <div class="result-item" *ngFor="let track of searchResults">
+      <div class="result-item" *ngFor="let track of searchResults; let i = index">
+        <div class="track-number">{{ i + 1 }}</div>
+        <img [src]="track.album?.images?.[2]?.url || track.album?.images?.[0]?.url || 'assets/default-album.png'" 
+             [alt]="track.name" 
+             class="track-image" />
         <div class="track-info">
-          <img [src]="track.album?.images?.[0]?.url || 'assets/default-album.png'" 
-               [alt]="track.name" 
-               class="track-image" />
-          <div class="track-details">
-            <h4>{{ track.name }}</h4>
-            <p>{{ track.artists?.[0]?.name }}</p>
-            <p class="album">{{ track.album?.name }}</p>
+          <div class="track-name">{{ track.name }}</div>
+          <div class="track-meta">
+            <span class="artist">{{ track.artists?.[0]?.name }}</span>
+            <span class="separator">•</span>
+            <span class="album">{{ track.album?.name }}</span>
           </div>
         </div>
-        <button class="play-btn" title="Agregar a playlist">
-          <i class="fa-solid fa-plus"></i>
-        </button>
+        <div class="track-details">
+          <div class="detail-item" *ngIf="track.album?.release_date">
+            <i class="fas fa-calendar"></i>
+            <span>{{ formatReleaseDate(track.album.release_date) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="track.popularity !== undefined">
+            <i class="fas fa-fire"></i>
+            <span>{{ track.popularity }}%</span>
+          </div>
+          <div class="detail-item">
+            <i class="fas fa-clock"></i>
+            <span>{{ formatDuration(track.duration_ms) }}</span>
+          </div>
+          <div class="detail-item" *ngIf="track.explicit">
+            <span class="explicit-badge">E</span>
+          </div>
+        </div>
+        <div class="track-actions">
+          <a [href]="track.external_urls?.spotify" 
+             target="_blank" 
+             rel="noopener noreferrer"
+             class="spotify-link"
+             title="Abrir en Spotify">
+            <i class="fab fa-spotify"></i>
+          </a>
+        </div>
       </div>
     </div>
   </div>
   
   <div class="loading" *ngIf="isLoading">
-    <p>Buscando...</p>
+    <div class="spinner"></div>
+    <p>Buscando en Spotify...</p>
   </div>
   
-  <div class="no-results" *ngIf="!isLoading && searchResults.length === 0">
-    <p>Busca tu música favorita</p>
+  <div class="no-results" *ngIf="!isLoading && searchResults.length === 0 && !hasSearched">
+    <i class="fas fa-search"></i>
+    <p>Busca tu música favorita en Spotify</p>
+    <p class="hint">Puedes buscar por canción, artista o álbum</p>
+  </div>
+  
+  <div class="no-results" *ngIf="!isLoading && searchResults.length === 0 && hasSearched">
+    <i class="fas fa-exclamation-circle"></i>
+    <p>No se encontraron resultados</p>
+    <p class="hint">Intenta con otros términos de búsqueda</p>
   </div>
 </div>

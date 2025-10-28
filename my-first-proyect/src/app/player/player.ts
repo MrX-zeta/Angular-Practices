@@ -25,7 +25,6 @@ export class Player implements OnInit {
     console.log('🎵 Player inicializado');
   }
 
-  // Métodos de control del reproductor
   playPause(): void {
     this.musicService.playPause();
   }
@@ -38,20 +37,17 @@ export class Player implements OnInit {
     this.musicService.previousSong();
   }
 
-  // Método para cargar una canción específica
   loadSong(song: any, autoPlay: boolean = false): void {
     this.musicService.loadSong(song, autoPlay);
   }
 
-  // Obtener información del álbum actual
   async loadCurrentAlbum(): Promise<void> {
     const currentSong = this.currentSong();
     if (currentSong?.song_name) {
       try {
-        console.log('📀 Cargando información de:', currentSong.song_name);
-        // Aquí se puede implementar lógica adicional para obtener más información del álbum
+        console.log('Cargando información de:', currentSong.song_name);
       } catch (error) {
-        console.error('❌ Error cargando información:', error);
+        console.error('Error cargando información:', error);
       }
     }
   }

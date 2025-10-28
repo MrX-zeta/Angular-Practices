@@ -1,5 +1,4 @@
 <div class="media-controls">
-  <!-- Información de la canción actual -->
   @if (currentSong()) {
     <div class="song-info">
       <img [src]="currentSong()?.caratula" [alt]="currentSong()?.song_name" class="song-cover">
@@ -10,7 +9,6 @@
     </div>
   }
 
-  <!-- Controles de reproducción -->
   <div class="playback-controls">
     <button (click)="previousSong()" class="control-btn" title="Anterior">
       ⏮
@@ -29,7 +27,6 @@
     </button>
   </div>
 
-  <!-- Barra de progreso -->
   <div class="progress-section">
     <span class="time">{{ formatTime() }}</span>
     <input 

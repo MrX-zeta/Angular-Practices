@@ -24,49 +24,21 @@ export class MusicPlayerService {
   readonly playlist = this._playlist.asReadonly();
   readonly currentIndex = this._currentIndex.asReadonly();
 
-  private defaultSongs: Song[] = [
-    /*{
-      song_name: "Gangsta's Paradise",
-      artist_name: 'Coolio',
-      song_url: 'media/Gangsta\'s Paradise.mp3',
-      caratula: 'media/gangsta\'s.jpg'
-    },
-    {
-      song_name: 'Eres Mía',
-      artist_name: 'Romeo Santos',
-      song_url: 'media/Romeo Santos - Eres Mía.mp3',
-      caratula: 'media/ab67706c0000da84008711051208af0862d31595.jpg'
-    },
-    {
-      song_name: 'Oh Lord',
-      artist_name: 'Foxy Shazam',
-      song_url: 'media/Oh Lord - Foxy Shazam.mp3',
-      caratula: 'media/1-2889d68a.png'
-    },
-    {
-      song_name: 'I Gotta Feeling',
-      artist_name: 'Black Eyed Peas',
-      song_url: 'media/Black Eyed Peas - I Gotta Feeling (Audio).mp3',
-      caratula: 'media/gotta.jpg'
-    },
-    {
-      song_name: 'Thrift Shop',
-      artist_name: 'Macklemore & Ryan Lewis',
-      song_url: 'media/MACKLEMORE & RYAN LEWIS - THRIFT SHOP FEAT. WANZ (OFFICIAL VIDEO).mp3',
-      caratula: 'media/thrift.jpg'
-    }*/
-  ];
+  private defaultSongs: Song[] = [];
 
   constructor(
     private spotifyPlaylistService: SpotifyPlaylistService,
     private spotifyService: SpotifyService
   ) {
     this.setupAudioEvents();
-    // Intentar cargar playlist de Spotify, si falla usar por defecto
-    this.loadSpotifyPlaylist();
+    
+    this._audio.volume = 1.0;
+    this._audio.muted = false;
+    console.log('🔊 Audio configurado - Volumen:', this._audio.volume, 'Muted:', this._audio.muted);
+    
+    console.log(' MusicPlayerService inicializado en modo búsqueda (sin reproducción automática)');
   }
 
-  // Método auxiliar para obtener una canción local aleatoria
   private getRandomLocalSong(): string {
     const randomIndex = Math.floor(Math.random() * this.defaultSongs.length);
     return this.defaultSongs[randomIndex].song_url;
@@ -74,7 +46,36 @@ export class MusicPlayerService {
 
   async loadSpotifyPlaylist() {
     try {
-      // Obtener token de acceso válido (guardado o nuevo)
+      console.log('🎵 Cargando canciones de prueba de Spotify...');
+      
+      const testTracks = await this.spotifyService.getTestTracksWithPreviews();
+      
+      if (testTracks.length > 0) {
+        console.log(` Cargando ${testTracks.length} canciones de prueba con previews`);
+        
+        const songs: Song[] = testTracks.map((track: any) => ({
+          song_name: track.name,
+          artist_name: track.artists && track.artists[0] ? track.artists[0].name : 'Artista desconocido',
+          song_url: track.preview_url,
+          caratula: track.album && track.album.images && track.album.images[0] 
+            ? track.album.images[0].url 
+            : 'https://via.placeholder.com/300x300/1DB954/ffffff?text=' + encodeURIComponent(track.name)
+        }));
+
+        console.log('🎵 Canciones cargadas:');
+        songs.forEach((song, index) => {
+          console.log(`${index + 1}. ${song.song_name} - ${song.artist_name}`);
+          console.log(`   Preview: ${song.song_url}`);
+        });
+
+        this._playlist.set(songs);
+        if (songs.length > 0) {
+          this.loadSong(songs[0]);
+          this._currentIndex.set(0);
+        }
+        return;
+      }
+
       const token = await this.spotifyService.getValidAccessToken();
       
       this.spotifyPlaylistService.getPlaylist(token).subscribe({
@@ -82,58 +83,35 @@ export class MusicPlayerService {
           console.log('=== PLAYLIST DE SPOTIFY CARGADA ===');
           console.log('Nombre de playlist:', response.name);
           console.log('Total de tracks:', response.tracks?.items?.length || 0);
-          console.log('Respuesta completa:', response);
           
-          // Mapear TODAS las canciones de Spotify + combinar con locales
           if (response.tracks && response.tracks.items && response.tracks.items.length > 0) {
-            console.log(`📋 Procesando ${response.tracks.items.length} tracks de Spotify...`);
-            
-            // Separar canciones CON preview y SIN preview
             const songsWithPreview: Song[] = [];
-            const songsWithoutPreview: Song[] = [];
             
             response.tracks.items
-              .filter((item: any) => item.track)
+              .filter((item: any) => item.track && item.track.preview_url)
               .forEach((item: any, index: number) => {
                 const track = item.track;
-                const hasPreview = track.preview_url && track.preview_url.trim() !== '';
-                
-                console.log(`🎵 Track ${index + 1}: ${track.name} - Preview: ${hasPreview ? 'SÍ ✅' : 'NO ❌'}`);
-                if (hasPreview) console.log(`   🔗 Preview URL: ${track.preview_url}`);
+                console.log(`🎵 Track ${index + 1}: ${track.name} - Preview: `);
                 
                 const song: Song = {
                   song_name: track.name,
                   artist_name: track.artists && track.artists[0] ? track.artists[0].name : 'Artista desconocido',
-                  song_url: hasPreview ? track.preview_url : '', // Solo usar preview si existe
+                  song_url: track.preview_url,
                   caratula: track.album && track.album.images && track.album.images[0] 
                     ? track.album.images[0].url 
                     : 'https://via.placeholder.com/300x300/1DB954/ffffff?text=' + encodeURIComponent(track.name)
                 };
                 
-                if (hasPreview) {
-                  songsWithPreview.push(song);
-                } else {
-                  songsWithoutPreview.push(song);
-                }
+                songsWithPreview.push(song);
               });
             
-            console.log(`🎵 Canciones CON preview: ${songsWithPreview.length}`);
-            console.log(`❌ Canciones SIN preview: ${songsWithoutPreview.length}`);
-            
-            // Usar solo canciones con preview + algunas locales como backup
-            const finalPlaylist = [...songsWithPreview, ...this.defaultSongs.slice(0, 3)];
-            
-            console.log(`✅ Total de canciones: ${finalPlaylist.length}`);
-            console.log(`🎵 Spotify (con preview): ${songsWithPreview.length}, Locales backup: ${Math.min(3, this.defaultSongs.length)}`);
-            
-            if (finalPlaylist.length > 0) {
-              // Usar la playlist final
-              this._playlist.set(finalPlaylist);
-              this.loadSong(finalPlaylist[0]);
+            if (songsWithPreview.length > 0) {
+              this._playlist.set(songsWithPreview);
+              this.loadSong(songsWithPreview[0]);
               this._currentIndex.set(0);
               console.log('🎵 Playlist con previews de Spotify cargada y lista para reproducir');
             } else {
-              console.warn('⚠️ No se encontraron previews, usando solo playlist local');
+              console.warn('⚠️ No se encontraron previews, usando playlist local');
               this.loadDefaultPlaylist();
             }
           } else {
@@ -142,12 +120,12 @@ export class MusicPlayerService {
           }
         },
         error: (error) => {
-          console.error('❌ Error cargando playlist de Spotify:', error);
+          console.error(' Error cargando playlist de Spotify:', error);
           this.loadDefaultPlaylist();
         }
       });
     } catch (error) {
-      console.error('Error obteniendo token de Spotify:', error);
+      console.error('Error obteniendo canciones de Spotify:', error);
       this.loadDefaultPlaylist();
     }
   }
@@ -163,13 +141,11 @@ export class MusicPlayerService {
   }
 
   private setupAudioEvents() {
-    // Event listener para metadatos cargados
     this._audio.addEventListener('loadedmetadata', () => {
       this._duration.set(this._audio.duration);
       this._progress.set(0);
     });
 
-    // Event listener para actualizar progreso
     this._audio.addEventListener('timeupdate', () => {
       const currentTime = this._audio.currentTime;
       const duration = this._audio.duration;
@@ -180,17 +156,14 @@ export class MusicPlayerService {
       }
     });
 
-    // Event listener ÚNICO para cuando termina la canción
     this._audio.addEventListener('ended', () => {
       console.log('🎵 Canción terminada - Pasando a la siguiente automáticamente');
-      // Pequeño delay para evitar problemas y asegurar que termine limpiamente
       setTimeout(() => {
         console.log('⏭️ Ejecutando nextSong()...');
         this.nextSong();
       }, 100);
     });
 
-    // Event listeners para play/pause
     this._audio.addEventListener('play', () => {
       this._isPlaying.set(true);
     });
@@ -199,7 +172,6 @@ export class MusicPlayerService {
       this._isPlaying.set(false);
     });
 
-    // Event listener para errores
     this._audio.addEventListener('error', (error) => {
       console.error('Error al cargar el audio:', error);
       console.error('URL que falló:', this._audio.src);
@@ -208,12 +180,10 @@ export class MusicPlayerService {
       this._isPlaying.set(false);
     });
 
-    // Event listener para cuando se puede reproducir
     this._audio.addEventListener('canplay', () => {
       console.log('Audio listo para reproducir:', this._currentSong()?.song_name);
     });
 
-    // Event listener para cuando empieza a cargar
     this._audio.addEventListener('loadstart', () => {
       console.log('Iniciando carga de audio...');
     });
@@ -225,7 +195,6 @@ export class MusicPlayerService {
     console.log('Artista:', song.artist_name);
     console.log('URL:', song.song_url);
     
-    // Determinar tipo de audio
     const isSpotifyPreview = song.song_url.includes('scdn.co') || song.song_url.includes('spotify');
     const isLocalFile = song.song_url.startsWith('media/');
     
@@ -239,24 +208,19 @@ export class MusicPlayerService {
     
     console.log('Auto reproducir:', autoPlay);
     
-    // Pausar audio actual si está reproduciéndose
     if (!this._audio.paused) {
       this._audio.pause();
     }
     
-    // Actualizar estado
     this._currentSong.set(song);
     this._isPlaying.set(false);
     
-    // Crear nuevo elemento audio para evitar problemas de caché
     this._audio.src = '';
     this._audio.load();
     
-    // Configurar nueva fuente
     this._audio.src = song.song_url;
     this._audio.load();
     
-    // Event listeners para esta canción específica
     const onLoadedMetadata = () => {
       this._duration.set(this._audio.duration);
       console.log('Duración cargada:', this._audio.duration);
@@ -306,7 +270,6 @@ export class MusicPlayerService {
     console.log('=== SELECCIÓN MANUAL ===');
     console.log('Canción seleccionada:', song.song_name);
     
-    // Encontrar el índice de la canción seleccionada
     const playlist = this._playlist();
     const songIndex = playlist.findIndex(s => 
       s.song_name === song.song_name && s.artist_name === song.artist_name
@@ -381,9 +344,8 @@ export class MusicPlayerService {
     return [...this._playlist()];
   }
   
-  // Método de prueba para diagnosticar problemas
   testAudio() {
-    console.log('🔍 DIAGNÓSTICO DE AUDIO');
+    console.log(' DIAGNÓSTICO DE AUDIO');
     console.log('Estado del audio:', {
       src: this._audio.src,
       paused: this._audio.paused,
@@ -395,20 +357,116 @@ export class MusicPlayerService {
       networkState: this._audio.networkState
     });
     
-    // Probar una URL simple
-    const testUrl = 'media/gangstas-paradise.mp3';
+    const testUrl = 'https://www.soundjay.com/misc/sounds/bell-ringing-05.wav';
     console.log('🎵 Probando URL:', testUrl);
     
     this._audio.src = testUrl;
+    this._audio.volume = 1.0;
+    this._audio.muted = false;
     this._audio.load();
     
     this._audio.addEventListener('canplay', () => {
-      console.log('✅ Audio de prueba listo');
+      console.log(' Audio de prueba listo');
       this._audio.play().then(() => {
-        console.log('✅ Audio de prueba reproduciendo');
+        console.log(' Audio de prueba reproduciendo - ¿Escuchas una campana?');
       }).catch(error => {
-        console.log('❌ Error reproduciendo audio de prueba:', error);
+        console.log(' Error reproduciendo audio de prueba:', error);
       });
     }, { once: true });
+    
+    this._audio.addEventListener('error', (e) => {
+      console.log(' Error en audio de prueba:', e);
+    }, { once: true });
+  }
+
+  forceAudioConfig() {
+    console.log('🔧 Forzando configuración de audio...');
+    
+    this._audio.volume = 1.0;
+    this._audio.muted = false;
+    
+    console.log('🔊 Volumen:', this._audio.volume);
+    console.log('🔇 Muted:', this._audio.muted);
+    
+    const currentSong = this._currentSong();
+    if (currentSong) {
+      console.log(' Reiniciando canción actual...');
+      this.loadSong(currentSong, true);
+    }
+  }
+
+  advancedAudioCheck() {
+    console.log(' === VERIFICACIÓN AVANZADA DE AUDIO ===');
+    
+    console.log('📊 Estado del elemento audio:');
+    console.log('  - src:', this._audio.src);
+    console.log('  - currentSrc:', this._audio.currentSrc);
+    console.log('  - paused:', this._audio.paused);
+    console.log('  - ended:', this._audio.ended);
+    console.log('  - volume:', this._audio.volume);
+    console.log('  - muted:', this._audio.muted);
+    console.log('  - currentTime:', this._audio.currentTime);
+    console.log('  - duration:', this._audio.duration);
+    console.log('  - readyState:', this._audio.readyState, '(0=HAVE_NOTHING, 1=HAVE_METADATA, 2=HAVE_CURRENT_DATA, 3=HAVE_FUTURE_DATA, 4=HAVE_ENOUGH_DATA)');
+    console.log('  - networkState:', this._audio.networkState, '(0=EMPTY, 1=IDLE, 2=LOADING, 3=NO_SOURCE)');
+    console.log('  - error:', this._audio.error);
+    
+    console.log('  - error:', this._audio.error);
+    
+    console.log(' Verificando AudioContext del navegador...');
+    try {
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      console.log(' AudioContext estado:', audioContext.state);
+      console.log(' AudioContext sampleRate:', audioContext.sampleRate);
+      
+      if (audioContext.state === 'suspended') {
+        console.log('⚠️ AudioContext está suspendido - puede requerir interacción del usuario');
+        audioContext.resume().then(() => {
+          console.log(' AudioContext reanudado');
+        }).catch(e => {
+          console.log(' Error reanudando AudioContext:', e);
+        });
+      }
+    } catch (e) {
+      console.log(' Error creando AudioContext:', e);
+      console.log(' Error creando AudioContext:', e);
+    }
+    
+    console.log(' Intentando reproducción forzada...');
+    const forcePlay = async () => {
+      try {
+        this._audio.volume = 1.0;
+        this._audio.muted = false;
+        
+        console.log('⏯️ Ejecutando play()...');
+        await this._audio.play();
+        console.log(' play() ejecutado exitosamente');
+        
+        setTimeout(() => {
+          console.log('📊 Estado después de play():');
+          console.log('  - paused:', this._audio.paused);
+          console.log('  - currentTime:', this._audio.currentTime);
+          console.log('  - duration:', this._audio.duration);
+          console.log('  - volume:', this._audio.volume);
+          console.log('  - muted:', this._audio.muted);
+        }, 1000);
+        
+      } catch (error) {
+        console.log(' Error en play():', error);
+        console.log('💡 Esto puede indicar que el navegador bloqueó la reproducción automática');
+      }
+    };
+    
+    forcePlay();
+    
+    return {
+      audioElement: this._audio,
+      src: this._audio.src,
+      volume: this._audio.volume,
+      muted: this._audio.muted,
+      paused: this._audio.paused,
+      readyState: this._audio.readyState,
+      networkState: this._audio.networkState
+    };
   }
 }

@@ -1,8 +1,9 @@
 export const environment = {
     production: true,
     spotify: {
-        clientId: '9944d71af81a4b06a0722ac659d82858',
-        clientSecret: '498b8a8723794bf5aefe693197effd66',
-        redirectUri: 'https://www.google.com'
+        clientId: '46ce3fe18b554406a71d8af46fe351c7',
+        clientSecret: 'd077bb07eb4544179dd44d95167ef0e3',
+        redirectUri: 'http://localhost:4200',
+        tokenUrl: 'https://accounts.spotify.com/api/token'
     }
 };
