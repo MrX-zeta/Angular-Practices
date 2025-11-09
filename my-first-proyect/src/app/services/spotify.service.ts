@@ -35,7 +35,7 @@ export class SpotifyService {
       }
       
       console.log(' Token obtenido exitosamente');
-      console.log('🕐 Expira en:', data.expires_in, 'segundos');
+      console.log('Expira en:', data.expires_in, 'segundos');
       
       const expiresAt = Date.now() + (data.expires_in * 1000);
       localStorage.setItem('spotify_access_token', data.access_token);
@@ -62,13 +62,13 @@ export class SpotifyService {
         console.log(' Usando token guardado válido');
         return savedToken;
       } else {
-        console.log('⚠️ Token expirado, obteniendo uno nuevo');
+        console.log(' Token expirado, obteniendo uno nuevo');
         localStorage.removeItem('spotify_access_token');
         localStorage.removeItem('spotify_token_expires_at');
       }
     }
     
-    console.log('🎫 Obteniendo nuevo token client credentials');
+    console.log(' Obteniendo nuevo token client credentials');
     return await this.getAccessToken();
   }
 
@@ -131,7 +131,7 @@ export class SpotifyService {
         }
       }
 
-      console.log(`🎵 Total de canciones con preview encontradas: ${allTracks.length}`);
+      console.log(`Total de canciones con preview encontradas: ${allTracks.length}`);
       return allTracks;
     } catch (error) {
       console.error(' Error obteniendo tracks de prueba:', error);
