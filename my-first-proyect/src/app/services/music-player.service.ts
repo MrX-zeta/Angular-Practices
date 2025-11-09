@@ -27,7 +27,6 @@ export class MusicPlayerService {
   readonly playlist = this._playlist.asReadonly();
   readonly currentIndex = this._currentIndex.asReadonly();
 
-  private defaultSongs: Song[] = [];
 
   constructor(
     private spotifyPlaylistService: SpotifyPlaylistService,
@@ -127,13 +126,8 @@ export class MusicPlayerService {
   }
 
   private loadDefaultPlaylist() {
-    console.log('Cargando playlist por defecto');
-    this._playlist.set(this.defaultSongs);
-    
-    if (this.defaultSongs.length > 0) {
-      this.loadSong(this.defaultSongs[0]);
-      this._currentIndex.set(0);
-    }
+    console.log('Cargando playlist por defecto (vacía)');
+    this._playlist.set([]);
   }
 
   private setupAudioEvents() {
@@ -233,36 +227,13 @@ export class MusicPlayerService {
     this._audio.src = song.song_url;
     this._audio.load();
     
-    const onLoadedMetadata = () => {
-      this._duration.set(this._audio.duration);
-      console.log('Duración cargada:', this._audio.duration);
-      this._audio.removeEventListener('loadedmetadata', onLoadedMetadata);
-    };
-    
-    const onCanPlay = () => {
-      console.log('Audio listo para reproducir');
-      if (autoPlay) {
-        this._audio.play().then(() => {
-          console.log('Reproducción iniciada exitosamente');
-        }).catch(e => {
-          console.error('Error reproduciendo audio:', e);
-        });
-      }
-      this._audio.removeEventListener('canplay', onCanPlay);
-    };
-    
-    const onError = (e: any) => {
-      console.error('=== ERROR CARGANDO AUDIO ===');
-      console.error('URL problemática:', song.song_url);
-      console.error('Error details:', e);
-      console.error('Audio error code:', this._audio.error?.code);
-      console.error('Audio error message:', this._audio.error?.message);
-      this._audio.removeEventListener('error', onError);
-    };
-    
-    this._audio.addEventListener('loadedmetadata', onLoadedMetadata);
-    this._audio.addEventListener('canplay', onCanPlay);
-    this._audio.addEventListener('error', onError);
+    // Event handling centralized in setupAudioEvents() to avoid duplicated listeners.
+    // Attempt to autoplay if requested; the browser may block autoplay without user interaction.
+    if (autoPlay) {
+      this._audio.play().catch(e => {
+        console.debug('Autoplay bloqueado o fallo al iniciar reproducción:', e);
+      });
+    }
   }
 
   playPause() {
