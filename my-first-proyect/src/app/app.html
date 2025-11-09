@@ -7,8 +7,8 @@
       
     <nav class="sidebar-nav">
       <ul>
-        <li (click)="showSection('home')" [class.active]="activeSection() === 'home'"><i class="fas fa-home"></i> Inicio</li>
-        <li (click)="showSection('search')" [class.active]="activeSection() === 'search'"><i class="fas fa-search"></i> Buscar</li>
+        <li (click)="showAndNavigate('home')" [routerLink]="['/home']" [class.active]="activeSection() === 'home'"><i class="fas fa-home"></i> Inicio</li>
+        <li (click)="showAndNavigate('search')" [routerLink]="['/search']" [class.active]="activeSection() === 'search'"><i class="fas fa-search"></i> Buscar</li>
         <li><i class="fas fa-book"></i> Tu biblioteca</li>
       </ul>
     </nav>

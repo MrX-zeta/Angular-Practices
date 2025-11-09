@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { MusicPlayerService } from './services/music-player.service';
 import { SpotifyService } from './services/spotify.service';
 import { ImageService } from './services/image.service';
@@ -11,12 +12,14 @@ import { CookieStorageService } from './services/general/cookie-storage-service'
   standalone: false,
   styleUrls: ['./app.css']
 })
+
 export class App implements OnInit {
   private musicService = inject(MusicPlayerService);
   private spotifyService = inject(SpotifyService);
   private imageService = inject(ImageService);
   private _spotifyLogin = inject(SpotifyLoginService);
   private _cookieStorage = inject(CookieStorageService);
+  private router = inject(Router);
   
   title = 'SoundShock';
   
@@ -35,6 +38,15 @@ export class App implements OnInit {
     this.activeSection.set(section);
   }
 
+  showAndNavigate(section: 'home' | 'search'): void {
+    this.showSection(section);
+    try {
+      this.router.navigate([section]);
+    } catch (err) {
+      console.warn(' Error navegando:', err);
+    }
+  }
+
   async ngOnInit(): Promise<void> {
     try {
       const hasToken = this._cookieStorage.checkCookie?.('access_token') || 
@@ -42,12 +54,12 @@ export class App implements OnInit {
       
       if (!hasToken) {
         this._spotifyLogin.getToken().subscribe({
-          next: () => console.log('✅ Token obtenido exitosamente'),
-          error: (err) => console.error('❌ Error obteniendo token:', err)
+          next: () => console.log('Token obtenido exitosamente'),
+          error: (err) => console.error('Error obteniendo token:', err)
         });
       }
     } catch (err) {
-      console.warn('⚠️ Error verificando token:', err);
+      console.warn('Error verificando token:', err);
     }
 
     try {
@@ -56,8 +68,17 @@ export class App implements OnInit {
       this.cardsImages = urls.slice(6);
       this.userAvatar = this.imageService.getRandomUrl('https://via.placeholder.com/32');
     } catch (err) {
-      console.warn('⚠️ Error cargando imágenes:', err);
+      console.warn('Error cargando imágenes:', err);
     }
+
+    try {
+      const path = this.router.url.split('?')[0] || '';
+      if (path.includes('/search')) {
+        this.activeSection.set('search');
+      } else {
+        this.activeSection.set('home');
+      }
+    } catch (err) {}
   }
 
   playPause(): void {
@@ -116,7 +137,7 @@ export class App implements OnInit {
     try {
       bar.setPointerCapture?.(event.pointerId);
     } catch (err) {
-      console.warn('⚠️ No se pudo capturar el pointer:', err);
+      console.warn('No se pudo capturar el pointer:', err);
     }
   }
 }

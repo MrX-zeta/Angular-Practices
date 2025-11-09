@@ -48,82 +48,9 @@ export class SpotifyService {
     }
   }
 
-  
-  loginUser(): void {
-    console.log('=== INICIANDO LOGIN SPOTIFY ===');
-    
-    const scopes = [
-      'streaming',
-      'user-read-email',
-      'user-read-private',
-      'user-read-playback-state',
-      'user-modify-playback-state',
-      'playlist-read-private',
-      'playlist-read-collaborative'
-    ].join(' ');
-    
-    const authUrl = `https://accounts.spotify.com/authorize?` +
-      `response_type=code&` +
-      `client_id=${this.clientId}&` +
-      `scope=${encodeURIComponent(scopes)}&` +
-      `redirect_uri=${encodeURIComponent(this.redirectUri)}&` +
-      `show_dialog=true`;
-    
-    console.log('Client ID:', this.clientId);
-    console.log('Redirect URI:', this.redirectUri);
-    console.log('URL completa:', authUrl);
-    
-    if (typeof window !== 'undefined') {
-      console.log('Redirigiendo a Spotify...');
-      window.location.href = authUrl;
-    } else {
-      console.error('Window no está disponible');
-    }
-  }
-
-  async getTokenFromCode(code: string): Promise<any> {
-    console.log(' Intercambiando código por token...');
-    
-    const response = await fetch('https://accounts.spotify.com/api/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': 'Basic ' + btoa(this.clientId + ':' + this.clientSecret)
-      },
-      body: `grant_type=authorization_code&code=${code}&redirect_uri=${encodeURIComponent(this.redirectUri)}`
-    });
-    
-    const data = await response.json();
-    console.log('Token response:', data);
-    
-    if (data.access_token) {
-      localStorage.setItem('spotify_access_token', data.access_token);
-      localStorage.setItem('spotify_refresh_token', data.refresh_token || '');
-      console.log(' Token guardado exitosamente');
-    }
-    
-    return data;
-  }
-
-  checkForSpotifyCode(): void {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
-    
-    if (code) {
-      this.getTokenFromCode(code).then(tokenData => {
-        console.log('Token automático obtenido:', tokenData);
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }).catch(error => {
-        console.error('Error con código automático:', error);
-      });
-    }
-  }
-
   async getValidAccessToken(): Promise<string> {
     console.log(' Verificando token de acceso...');
-    
-    this.checkForSpotifyCode();
-    
+
     const savedToken = localStorage.getItem('spotify_access_token');
     const expiresAt = localStorage.getItem('spotify_token_expires_at');
     
@@ -200,7 +127,7 @@ export class SpotifyService {
           
           await new Promise(resolve => setTimeout(resolve, 200));
         } catch (error) {
-          console.warn(`⚠️ Error buscando: ${query}`, error);
+          console.warn(`Error buscando: ${query}`, error);
         }
       }
 
@@ -213,24 +140,6 @@ export class SpotifyService {
   }
 
   async getUserPlaylists(): Promise<any> {
-    try {
-      const token = await this.getValidAccessToken();
-      
-      const response = await fetch('https://api.spotify.com/v1/me/playlists', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-      
-      const data = await response.json();
-      return data.items || [];
-    } catch (error) {
-      console.error(' Error obteniendo playlists:', error);
-      throw error;
-    }
+    throw new Error('getUserPlaylists requires user authentication (not implemented)');
   }
 }

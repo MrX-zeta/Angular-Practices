@@ -7,6 +7,7 @@ import { CookieStorageService } from './general/cookie-storage-service.js';
 @Injectable({
   providedIn: 'root'
 })
+
 export class SpotifyPlaylistService {
 
   constructor(

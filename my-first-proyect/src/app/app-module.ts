@@ -16,12 +16,14 @@ import { Player } from './player/player';
 
 import { SearchSection } from '../search/search-bar/search-section/search-section';
 import { SearchBarModule } from '../search/search-bar/search-bar.module';
+import { RouteDummy } from './route-dummy';
 
 @NgModule({
   declarations: [
     App,
     AudioController,
     Player,
+    RouteDummy,
     SearchSection,
     InfoSong,
     MediaControl,
