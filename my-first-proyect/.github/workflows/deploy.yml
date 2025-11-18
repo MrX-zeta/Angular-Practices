@@ -4,8 +4,8 @@ name: archivo de deploy para bucket s3 con angular
 on:
     push:
         branches:
+            - main
             - test-deploy
-            - new-branch
 
 jobs:
     deploy:
