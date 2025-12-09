@@ -15,9 +15,25 @@
         <div class="track-info">
           <div class="track-name">{{ track.name }}</div>
           <div class="track-meta">
-            <span class="artist">{{ track.artists?.[0]?.name }}</span>
+            <a [href]="track.artists?.[0]?.external_urls?.spotify" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="artist artist-link"
+               title="Ver artista en Spotify"
+               *ngIf="track.artists?.[0]?.external_urls?.spotify">
+              {{ track.artists?.[0]?.name }}
+            </a>
+            <span class="artist" *ngIf="!track.artists?.[0]?.external_urls?.spotify">{{ track.artists?.[0]?.name }}</span>
             <span class="separator">•</span>
-            <span class="album">{{ track.album?.name }}</span>
+            <a [href]="track.album?.external_urls?.spotify" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="album album-link"
+               title="Ver álbum en Spotify"
+               *ngIf="track.album?.external_urls?.spotify">
+              {{ track.album?.name }}
+            </a>
+            <span class="album" *ngIf="!track.album?.external_urls?.spotify">{{ track.album?.name }}</span>
           </div>
         </div>
         <div class="track-details">

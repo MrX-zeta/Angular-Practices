@@ -113,11 +113,35 @@
   text-overflow: ellipsis;
 }
 
+.artist-link {
+  color: #b3b3b3;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.artist-link:hover {
+  color: #1DB954;
+  text-decoration: underline;
+}
+
 .album {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   color: #888;
+}
+
+.album-link {
+  color: #888;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.album-link:hover {
+  color: #fff;
+  text-decoration: underline;
 }
 
 .separator {
